@@ -7,6 +7,9 @@ const g = 9.81;
 function App() {
   const chartRef = useRef(null);
   var tOfFlight = 0;
+  var hMax = 0;
+  var hRange = 0;
+  var maxHRange = 0;
 
   const [velocity, setVelocity] = useState(0);
   const [angle, setAngle] = useState(0);
@@ -30,21 +33,36 @@ function App() {
   const generateDataPoints = () => {
     const dataPoints = [];
     tOfFlight = (2 * velocity * Math.sin(angle * (Math.PI / 180))) / g;
-  
+    hMax = Math.pow(velocity * Math.sin(angle * (Math.PI / 180)), 2) / (2 * g);
+    hRange = (Math.pow(velocity, 2) * Math.sin(2 * angle * (Math.PI / 180))) / g;
+    maxHRange = Math.pow(velocity, 2) / g;
+
+    const numPoints = Math.max(Math.ceil(tOfFlight / 0.005), 2); // Adjust density as needed
+    const yTolerance = 0.005; // Adjust the tolerance range as needed
+
     if (tOfFlight > 0) {
-      console.log("Total Time:", tOfFlight);
-  
-      for (let t = 0; t <= tOfFlight + 0.00001; t += 0.005) {
-        const x = velocity * Math.cos(angle * (Math.PI / 180)) * t;
-        const y = velocity * Math.sin(angle * (Math.PI / 180)) * t - (0.5 * g * t ** 2);
-        dataPoints.push({ x: +x.toFixed(2), y: +y.toFixed(2) });
-      }
+        console.log("Total Time:", tOfFlight);
+
+        let prevY = null;
+
+        for (let i = 0; i <= numPoints; i++) {
+            const t = (i / numPoints) * tOfFlight;
+            const x = velocity * Math.cos(angle * (Math.PI / 180)) * t;
+            const y = velocity * Math.sin(angle * (Math.PI / 180)) * t - (0.5 * g * t ** 2);
+
+            // Check if the absolute difference between the new y-value and the previous y-value is within the tolerance range
+            if (prevY === null || Math.abs(y - prevY) > yTolerance) {
+                dataPoints.push({ x: +x.toFixed(2), y: +y.toFixed(2) });
+                prevY = y;
+            }
+        }
     } else {
-      console.error("Invalid input parameters. Please provide valid values.");
+        console.error("Invalid input parameters. Please provide valid values.");
     }
-  
+
     return dataPoints;
-  };
+};
+
 
   const dataPoints = generateDataPoints();
 
@@ -56,7 +74,6 @@ function App() {
         borderColor: colors.graphLineColor1,
         data: dataPoints,
         pointRadius: 0,
-        pointHitRadius: 0, 
       },
     ],
   };
@@ -137,7 +154,10 @@ function App() {
           <button onClick={handleAngleChange}>Update Angle</button>
         </div>
         <canvas ref={chartRef} style={{ width: '100%', height: '100%' }} />
-        <input value={tOfFlight}/>
+        Time of flight: <input value={tOfFlight}/><br/>
+        Maximum height: <input value={hMax}/><br/>
+        Horizontal range: <input value={hRange}/><br/>
+        Maximum horizontal range: <input value={maxHRange}/>
       </div>
     </center>
   );
