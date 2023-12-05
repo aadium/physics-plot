@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import colors from "./theme/colors";
+import Navbar from "./widgets/navbar";
+import { Typography } from '@mui/material';
+import "./App.css"
 
 const g = 9.81;
 
@@ -11,22 +14,25 @@ function App() {
   var hRange = 0;
   var maxHRange = 0;
 
+  const [error, setError] = useState('');
   const [velocity, setVelocity] = useState(0);
   const [angle, setAngle] = useState(0);
   const [vInputValue, setVInputValue] = useState("");
   const [aInputValue, setAInputValue] = useState("");
 
-  const handleVelocityChange = () => {
+  const handleChange = () => {
     const newVel = parseFloat(vInputValue);
-    if (!isNaN(newVel)) {
-      setVelocity(newVel);
-    }
-  };
-
-  const handleAngleChange = () => {
     const newAng = parseFloat(aInputValue);
-    if (!isNaN(newAng)) {
-      setAngle(newAng);
+    if (!isNaN(newVel) && !isNaN(newAng)) {
+      if (newVel < 10 || newAng < 10) {
+        setError('Please enter a value greater than 10')
+      } else {
+        setError('')
+        setVelocity(newVel);
+        setAngle(newAng);
+      }
+    } else {
+      setError('Please enter a value')
     }
   };
 
@@ -50,7 +56,6 @@ function App() {
             const x = velocity * Math.cos(angle * (Math.PI / 180)) * t;
             const y = velocity * Math.sin(angle * (Math.PI / 180)) * t - (0.5 * g * t ** 2);
 
-            // Check if the absolute difference between the new y-value and the previous y-value is within the tolerance range
             if (prevY === null || Math.abs(y - prevY) > yTolerance) {
                 dataPoints.push({ x: +x.toFixed(2), y: +y.toFixed(2) });
                 prevY = y;
@@ -61,8 +66,7 @@ function App() {
     }
 
     return dataPoints;
-};
-
+  };
 
   const dataPoints = generateDataPoints();
 
@@ -134,6 +138,7 @@ function App() {
 
   return (
     <center>
+      <Navbar/>
       <div style={{ maxWidth: '600px', maxHeight: '700px' }}>
         <div>
           <input
@@ -142,7 +147,6 @@ function App() {
             value={vInputValue}
             onChange={(e) => setVInputValue(e.target.value)}
           />
-          <button onClick={handleVelocityChange}>Update Velocity</button>
         </div>
         <div>
           <input
@@ -151,13 +155,32 @@ function App() {
             value={aInputValue}
             onChange={(e) => setAInputValue(e.target.value)}
           />
-          <button onClick={handleAngleChange}>Update Angle</button>
         </div>
+        <button onClick={handleChange}>Update Values</button>
+        {error && <Typography color="error">{error}</Typography>}
         <canvas ref={chartRef} style={{ width: '100%', height: '100%' }} />
-        Time of flight: <input value={tOfFlight}/><br/>
-        Maximum height: <input value={hMax}/><br/>
-        Horizontal range: <input value={hRange}/><br/>
-        Maximum horizontal range: <input value={maxHRange}/>
+        <table cellPadding={10}>
+          <tr>
+            <td align="right">Time of flight:</td>
+            <td>{tOfFlight}</td>
+            <td>s</td>
+          </tr>
+          <tr>
+            <td align="right">Maximum height:</td>
+            <td>{hMax}</td>
+            <td>m</td>
+          </tr>
+          <tr>
+            <td align="right">Horizontal range:</td>
+            <td>{hRange}</td>
+            <td>m</td>
+          </tr>
+          <tr>
+            <td align="right">Maximum horizontal range:</td>
+            <td>{maxHRange}</td>
+            <td>m</td>
+          </tr>
+        </table>
       </div>
     </center>
   );
