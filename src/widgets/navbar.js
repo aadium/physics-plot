@@ -12,11 +12,11 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-logo">
-          <a href="/">Your Logo</a>
+          <a href="/">Graphed Equations</a>
         </div>
 
         <div className={`navbar-links ${isMobileMenuOpen ? 'open' : ''}`}>
-          <a href="#">Home</a>
+          <a href="/projectilemotion">Projectile Motion</a>
           <a href="#">About</a>
           <a href="#">Services</a>
           <a href="#">Contact</a>
