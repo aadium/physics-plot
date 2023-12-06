@@ -18,8 +18,8 @@ function ProjectileMotion() {
   const [error, setError] = useState('');
   const [velocity, setVelocity] = useState(0);
   const [angle, setAngle] = useState(0);
-  const [vInputValue, setVInputValue] = useState("");
-  const [aInputValue, setAInputValue] = useState("");
+  const [vInputValue, setVInputValue] = useState('');
+  const [aInputValue, setAInputValue] = useState('');
 
   const handleChange = () => {
     const newVel = parseFloat(vInputValue);
@@ -57,16 +57,13 @@ function ProjectileMotion() {
         dataPoints.push({ x: +x.toFixed(2), y: +y.toFixed(2) });
       }
   
-      // Extract x values
       const xValues = dataPoints.map(point => point.x);
   
-      // Calculate y values based on x values
       const yValues = xValues.map(x => {
         const t = x / (velocity * Math.cos(angle * (Math.PI / 180)));
         return velocity * Math.sin(angle * (Math.PI / 180)) * t - (0.5 * g * t ** 2);
       });
   
-      // Combine x and y values
       const finalDataPoints = xValues.map((x, index) => ({ x, y: yValues[index] }));
   
       return finalDataPoints;
@@ -103,6 +100,10 @@ function ProjectileMotion() {
       options: {
         scales: {
           x: {
+            title: {
+              display: true,
+              text: 'Distance (m)'
+            },
             type: 'linear',
             position: 'bottom',
             gridLines: {
@@ -119,6 +120,10 @@ function ProjectileMotion() {
             },
           },
           y: {
+            title: {
+              display: true,
+              text: 'Height (m)'
+            },
             type: 'linear',
             position: 'left',
             gridLines: {
@@ -176,7 +181,6 @@ function ProjectileMotion() {
             className="func-coeff"
             type="text"
             placeholder="Enter velocity in m/s"
-            value={vInputValue}
             onChange={(e) => setVInputValue(e.target.value)}
           />
         </div>
@@ -185,7 +189,6 @@ function ProjectileMotion() {
             className="func-coeff"
             type="text"
             placeholder="Enter angle in degrees"
-            value={aInputValue}
             onChange={(e) => setAInputValue(e.target.value)}
           />
         </div>

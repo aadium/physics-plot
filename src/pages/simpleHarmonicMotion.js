@@ -6,86 +6,79 @@ import { Typography } from '@mui/material';
 import "../App.css";
 import "../theme/CSS/pages.css";
 
-const g = 9.81;
-
 function SimpleHarmonicMotion() {
   const chartRef = useRef(null);
-  var tOfFlight = 0;
-  var hMax = 0;
-  var hRange = 0;
-  var maxHRange = 0;
+  var frequency = 0;
+  var maxDisp = 0;
+  var maxVel = 0;
+  var energy = 0;
 
   const [error, setError] = useState('');
-  const [velocity, setVelocity] = useState(0);
-  const [angle, setAngle] = useState(0);
-  const [vInputValue, setVInputValue] = useState("");
-  const [aInputValue, setAInputValue] = useState("");
+  const [amplitude, setAmplitude] = useState(0);
+  const [angularFrequency, setAngularFrequency] = useState(0);
+  const [startTimeText, setStartTimeText] = useState('');
+  const [endTimeText, setEndTimeText] = useState('');
+  const [startTime, setStartTime] = useState(0);
+  const [endTime, setEndTime] = useState(0);
+  const [phaseConstant, setPhaseConstant] = useState(0);
+  const [phaseConstantText, setPhaseConstantText] = useState('');
+  const [amplitudeText, setAmplitudeText] = useState('');
+  const [angularFrequencyText, setAngularFrequencyText] = useState('');
+  const [numPoints, setNumPoints] = useState(100);
+  const [mass, setMass] = useState(0);
+  const [massText, setMassText] = useState('');
 
   const handleChange = () => {
-    const newVel = parseFloat(vInputValue);
-    const newAng = parseFloat(aInputValue);
-    if (!isNaN(newVel) && !isNaN(newAng)) {
-      if (newVel < 10 || newAng < 10) {
-        setError('Please enter a value not less than 10')
-      } else {
-        setError('')
-        setVelocity(newVel);
-        setAngle(newAng);
+    const newAmp = parseFloat(amplitudeText);
+    const newAngV = parseFloat(angularFrequencyText);
+    const newPhaseConst = parseFloat(phaseConstantText);
+    const startTime = parseFloat(startTimeText);
+    const endTime = parseFloat(endTimeText);
+    const newMass = parseFloat(massText)
+
+    if (!isNaN(newAmp) && !isNaN(newAngV) && !isNaN(newPhaseConst) && !isNaN(startTime) && !isNaN(endTime)) {
+      if (endTime <= startTime) {
+        setError('End time must be greater than start time');
+        return;
       }
+
+      const timePeriod = endTime - startTime;
+      setNumPoints(Math.ceil(timePeriod / 0.01));
+
+      setAmplitude(newAmp);
+      setAngularFrequency(newAngV);
+      setPhaseConstant(newPhaseConst);
+      setMass(newMass);
+      setStartTime(startTime);
+      setEndTime(endTime);
+      setError('');
     } else {
-      setError('Please enter a value')
+      setError('Please enter valid numerical values');
     }
   };
 
-  const generateDataPoints = () => {
-    const dataPoints = [];
-    tOfFlight = (2 * velocity * Math.sin(angle * (Math.PI / 180))) / g;
-    hMax = Math.pow(velocity * Math.sin(angle * (Math.PI / 180)), 2) / (2 * g);
-    hRange = (Math.pow(velocity, 2) * Math.sin(2 * angle * (Math.PI / 180))) / g;
-    maxHRange = Math.pow(velocity, 2) / g;
-  
-    const numPoints = Math.max(Math.ceil(tOfFlight / 0.01), 2);
-  
-    if (tOfFlight > 0) {
-      console.log("Total Time:", tOfFlight);
-  
-      for (let i = 0; i <= numPoints; i++) {
-        const t = (i / numPoints) * tOfFlight;
-        const x = velocity * Math.cos(angle * (Math.PI / 180)) * t;
-        const y = velocity * Math.sin(angle * (Math.PI / 180)) * t - (0.5 * g * t ** 2);
-  
-        dataPoints.push({ x: +x.toFixed(2), y: +y.toFixed(2) });
-      }
-  
-      // Extract x values
-      const xValues = dataPoints.map(point => point.x);
-  
-      // Calculate y values based on x values
-      const yValues = xValues.map(x => {
-        const t = x / (velocity * Math.cos(angle * (Math.PI / 180)));
-        return velocity * Math.sin(angle * (Math.PI / 180)) * t - (0.5 * g * t ** 2);
-      });
-  
-      // Combine x and y values
-      const finalDataPoints = xValues.map((x, index) => ({ x, y: yValues[index] }));
-  
-      return finalDataPoints;
-    } else {
-      console.error("Invalid input parameters. Please provide valid values.");
-      return dataPoints;
-    }
-  };
+  frequency = 1 / (endTime - startTime);
+  maxDisp = amplitude;
+  maxVel = amplitude * angularFrequency;
+  energy = 0.5 * mass * Math.pow(angularFrequency * amplitude, 2);
 
-  const dataPoints = generateDataPoints();
+  const timeValues = Array.from({ length: numPoints + 1 }, (_, index) => {
+    const time = parseFloat(startTimeText) + (index / numPoints) * (parseFloat(endTimeText) - parseFloat(startTimeText));
+    return time;
+  });
 
   const data = {
     datasets: [
       {
-        label: 'Trajectory',
+        label: 'Simple Harmonic Motion',
         backgroundColor: colors.graphLineColor1,
         borderColor: colors.graphLineColor1,
-        data: dataPoints,
+        data: timeValues.map((time) => ({
+          x: time,
+          y: amplitude * Math.sin(angularFrequency * time + phaseConstant),
+        })),
         pointRadius: 0,
+        showLine: true,
       },
     ],
   };
@@ -103,6 +96,10 @@ function SimpleHarmonicMotion() {
       options: {
         scales: {
           x: {
+            title: {
+              display: true,
+              text: 'Time (s)'
+            },
             type: 'linear',
             position: 'bottom',
             gridLines: {
@@ -119,12 +116,15 @@ function SimpleHarmonicMotion() {
             },
           },
           y: {
+            title: {
+              display: true,
+              text: 'Amplitude (m)'
+            },
             type: 'linear',
             position: 'left',
             gridLines: {
               display: true,
             },
-            min: 0,
             grid: {
               color: function (context) {
                 if (context.tick.value === 0) {
@@ -143,31 +143,31 @@ function SimpleHarmonicMotion() {
         canvas.chart.destroy();
       }
     };
-  }, [angle, velocity]);
+  }, [amplitude, angularFrequency, numPoints, phaseConstant]);
 
   return (
     <center>
       <Navbar/>
-        <table className="stats-pane" cellPadding={10}>
+      <table className="stats-pane" cellPadding={10}>
           <tr>
-            <td align="right">Time of flight:</td>
-            <td>{tOfFlight.toFixed(3)}</td>
-            <td>s</td>
+            <td align="right">Frequency:</td>
+            <td>{frequency.toFixed(3)}</td>
+            <td>Hz</td>
           </tr>
           <tr>
-            <td align="right">Maximum height:</td>
-            <td>{hMax.toFixed(3)}</td>
+            <td align="right">Maximum displacement:</td>
+            <td>{maxDisp.toFixed(3)}</td>
             <td>m</td>
           </tr>
           <tr>
-            <td align="right">Horizontal range:</td>
-            <td>{hRange.toFixed(3)}</td>
-            <td>m</td>
+            <td align="right">Maximum velocity:</td>
+            <td>{maxVel}</td>
+            <td>m/s</td>
           </tr>
           <tr>
-            <td align="right">Maximum horizontal range:</td>
-            <td>{maxHRange.toFixed(3)}</td>
-            <td>m</td>
+            <td align="right">Energy:</td>
+            <td>{energy.toFixed(3)}</td>
+            <td>J</td>
           </tr>
         </table>
       <div className="input-pane">
@@ -175,18 +175,47 @@ function SimpleHarmonicMotion() {
           <input
             className="func-coeff"
             type="text"
-            placeholder="Enter velocity in m/s"
-            value={vInputValue}
-            onChange={(e) => setVInputValue(e.target.value)}
+            placeholder="Enter amplitude in metres"
+            onChange={(e) => setAmplitudeText((e.target.value))}
           />
         </div>
         <div>
           <input
             className="func-coeff"
             type="text"
-            placeholder="Enter angle in degrees"
-            value={aInputValue}
-            onChange={(e) => setAInputValue(e.target.value)}
+            placeholder="Enter angular frequency in rad/s"
+            onChange={(e) => setAngularFrequencyText((e.target.value))}
+          />
+        </div>
+        <div>
+          <input
+            className="func-coeff"
+            type="text"
+            placeholder="Enter phase constant"
+            onChange={(e) => setPhaseConstantText((e.target.value))}
+          />
+        </div>
+        <div>
+          <input
+            className="func-coeff"
+            type="text"
+            placeholder="Enter mass in kg"
+            onChange={(e) => setMassText((e.target.value))}
+          />
+        </div>
+        <div>
+          <input
+            className="func-coeff"
+            type="text"
+            placeholder="Enter start time in sec"
+            onChange={(e) => setStartTimeText((e.target.value))}
+          /><br/>
+          <span> to </span><br/>
+          <input
+            className="func-coeff"
+            type="text"
+            placeholder="Enter end time in sec"
+            onChange={(e) => setEndTimeText((e.target.value))}
           />
         </div>
         <button className="calculate-answer-btn" onClick={handleChange}>Update Values</button>
