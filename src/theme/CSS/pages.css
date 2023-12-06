@@ -1,0 +1,40 @@
+.stats-pane {
+    float: right;
+    margin-top: 30px;
+    margin-right: 30px;
+}
+
+.input-pane {
+    float: left;
+    margin-top: 30px;
+    margin-left: 30px;
+}
+
+.func-coeff {
+    background-color: transparent;
+    border: 2px solid #61dafb;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    color: white;
+    font-size: 18px;
+    width: 250px;
+}
+
+.calculate-answer-btn {
+    background-color: #61dafb;
+    color: #171717;
+    border: 2px solid transparent;
+    padding: 10px 20px;
+    border-radius: 5px;
+    width: 290px;
+    font-size: 18px;
+    margin: 10px;
+    transition: 0.2s;
+}
+
+.calculate-answer-btn:hover {
+    background-color: transparent;
+    border: 2px solid #61dafb;
+    color: #61dafb;
+}

@@ -1,6 +1,7 @@
 .navbar {
-    background-color: #333;
+    background-color: #61dafb12;
     color: white;
+    border-bottom: 2px solid #61dafb;
     padding: 15px 0;
 }
 

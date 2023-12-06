@@ -8,7 +8,7 @@ import "../theme/CSS/pages.css";
 
 const g = 9.81;
 
-function ProjectileMotion() {
+function SimpleHarmonicMotion() {
   const chartRef = useRef(null);
   var tOfFlight = 0;
   var hMax = 0;
@@ -199,4 +199,4 @@ function ProjectileMotion() {
   );
 }
 
-export default ProjectileMotion;
+export default SimpleHarmonicMotion;

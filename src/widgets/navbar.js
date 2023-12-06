@@ -12,14 +12,12 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-logo">
-          <a href="/">Graphed Equations</a>
+          <a href="/">Physics Plot</a>
         </div>
 
         <div className={`navbar-links ${isMobileMenuOpen ? 'open' : ''}`}>
-          <a href="/projectilemotion">Projectile Motion</a>
-          <a href="#">About</a>
-          <a href="#">Services</a>
-          <a href="#">Contact</a>
+          <a href="/projectilemotion">Projectile</a>
+          <a href="/simpleharmonicmotion">Simple Harmonic</a>
         </div>
 
         <div className="navbar-toggle" onClick={toggleMobileMenu}>
