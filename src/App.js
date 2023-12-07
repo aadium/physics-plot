@@ -3,6 +3,7 @@ import './App.css'
 import ProjectileMotion from "./pages/projectile";
 import HomePage from "./pages/home";
 import SimpleHarmonicMotion from "./pages/simpleHarmonicMotion";
+import WaveEquation from "./pages/waveEquation";
 
 const App = () => {
   return (
@@ -11,6 +12,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/projectilemotion" element={<ProjectileMotion />} />
         <Route path="/simpleharmonicmotion" element={<SimpleHarmonicMotion />} />
+        <Route path="/waveequation" element={<WaveEquation />} />
       </Routes>
     </Router>
   )

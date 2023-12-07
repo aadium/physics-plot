@@ -1,0 +1,49 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+}
+
+.hero {
+    background-color: #212121;
+    padding: 50px;
+    text-align: center;
+}
+
+.features,
+.how-to-use,
+.equations {
+    background-color: #2c2c2c;
+    padding: 30px;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.features h2,
+.how-to-use h2,
+.equations h2 {
+    color: #61dafb;
+    margin-bottom: 20px;
+}
+
+.features ul,
+.how-to-use ol {
+    list-style-type: none;
+    padding: 0;
+}
+
+.features li,
+.how-to-use li {
+    margin-bottom: 10px;
+}
+
+.app-link {
+    color: #61dafb;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.app-link:hover {
+    text-decoration: underline;
+}
