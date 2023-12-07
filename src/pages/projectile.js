@@ -88,7 +88,6 @@ function ProjectileMotion() {
   };
 
   useEffect(() => {
-    document.body.style.backgroundColor = colors.backgroundColor;
     const canvas = chartRef.current;
     if (canvas.chart) {
       canvas.chart.destroy();

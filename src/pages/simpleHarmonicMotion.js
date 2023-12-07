@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import colors from "../theme/colors";
 import Navbar from "../widgets/navbar";
-import { Typography } from '@mui/material';
+import { Typography, Checkbox, FormControlLabel } from '@mui/material';
 import "../App.css";
 import "../theme/CSS/pages.css";
 
@@ -27,34 +27,55 @@ function SimpleHarmonicMotion() {
   const [numPoints, setNumPoints] = useState(100);
   const [mass, setMass] = useState(0);
   const [massText, setMassText] = useState('');
+  const [decayConst, setDecayConst] = useState(0);
+  const [decayConstText, setDecayConstText] = useState('');
+  const [showMass, setShowMass] = useState(false);
+  const [showDecayConst, setShowDecayConst] = useState(false);
 
   const handleChange = () => {
     const newAmp = parseFloat(amplitudeText);
     const newAngV = parseFloat(angularFrequencyText);
     const newPhaseConst = parseFloat(phaseConstantText);
-    const startTime = parseFloat(startTimeText);
-    const endTime = parseFloat(endTimeText);
-    const newMass = parseFloat(massText)
+    const newStartTime = parseFloat(startTimeText);
+    const newEndTime = parseFloat(endTimeText);
+    const newMass = (massText !== '') ? parseFloat(massText) : 0;
+    const newDecayConst = (decayConstText !== '') ? parseFloat(decayConstText) : 0;
 
-    if (!isNaN(newAmp) && !isNaN(newAngV) && !isNaN(newPhaseConst) && !isNaN(startTime) && !isNaN(endTime)) {
-      if (endTime <= startTime) {
+    if (
+      !isNaN(newAmp) &&
+      !isNaN(newAngV) &&
+      !isNaN(newPhaseConst) &&
+      !isNaN(newMass) &&
+      !isNaN(newStartTime) &&
+      !isNaN(newEndTime)
+    ) {
+      if (newEndTime <= newStartTime) {
         setError('End time must be greater than start time');
         return;
       }
 
-      const timePeriod = endTime - startTime;
+      const timePeriod = newEndTime - newStartTime;
       setNumPoints(Math.ceil(timePeriod / 0.01));
 
       setAmplitude(newAmp);
       setAngularFrequency(newAngV);
       setPhaseConstant(newPhaseConst);
       setMass(newMass);
-      setStartTime(startTime);
-      setEndTime(endTime);
+      setStartTime(newStartTime);
+      setEndTime(newEndTime);
+      setDecayConst(newDecayConst);
       setError('');
     } else {
       setError('Please enter valid numerical values');
     }
+  };
+
+  const handleDCCheckboxChange = (event) => {
+    setShowDecayConst(event.target.checked);
+  };
+  
+  const handleMassCheckboxChange = (event) => {
+    setShowMass(event.target.checked);
   };
 
   frequency = 1 / (endTime - startTime);
@@ -70,12 +91,12 @@ function SimpleHarmonicMotion() {
   const data = {
     datasets: [
       {
-        label: 'Simple Harmonic Motion',
+        label: 'Wave',
         backgroundColor: colors.graphLineColor1,
         borderColor: colors.graphLineColor1,
         data: timeValues.map((time) => ({
           x: time,
-          y: amplitude * Math.sin(angularFrequency * time + phaseConstant),
+          y: amplitude * Math.exp(-1 * decayConst * time) * Math.sin(angularFrequency * time + phaseConstant),
         })),
         pointRadius: 0,
         showLine: true,
@@ -84,7 +105,6 @@ function SimpleHarmonicMotion() {
   };
 
   useEffect(() => {
-    document.body.style.backgroundColor = colors.backgroundColor;
     const canvas = chartRef.current;
     if (canvas.chart) {
       canvas.chart.destroy();
@@ -147,29 +167,29 @@ function SimpleHarmonicMotion() {
 
   return (
     <center>
-      <Navbar/>
+      <Navbar />
       <table className="stats-pane" cellPadding={10}>
-          <tr>
-            <td align="right">Frequency:</td>
-            <td>{frequency.toFixed(3)}</td>
-            <td>Hz</td>
-          </tr>
-          <tr>
-            <td align="right">Maximum displacement:</td>
-            <td>{maxDisp.toFixed(3)}</td>
-            <td>m</td>
-          </tr>
-          <tr>
-            <td align="right">Maximum velocity:</td>
-            <td>{maxVel}</td>
-            <td>m/s</td>
-          </tr>
-          <tr>
-            <td align="right">Energy:</td>
-            <td>{energy.toFixed(3)}</td>
-            <td>J</td>
-          </tr>
-        </table>
+        <tr>
+          <td align="right">Frequency:</td>
+          <td>{frequency.toFixed(3)}</td>
+          <td>Hz</td>
+        </tr>
+        <tr>
+          <td align="right">Maximum displacement:</td>
+          <td>{maxDisp.toFixed(3)}</td>
+          <td>m</td>
+        </tr>
+        <tr>
+          <td align="right">Maximum velocity:</td>
+          <td>{maxVel}</td>
+          <td>m/s</td>
+        </tr>
+        <tr>
+          <td align="right">Energy:</td>
+          <td>{energy.toFixed(3)}</td>
+          <td>J</td>
+        </tr>
+      </table>
       <div className="input-pane">
         <div>
           <input
@@ -196,12 +216,24 @@ function SimpleHarmonicMotion() {
           />
         </div>
         <div>
-          <input
-            className="func-coeff"
-            type="text"
-            placeholder="Enter mass in kg"
-            onChange={(e) => setMassText((e.target.value))}
-          />
+          {showMass && (
+            <input
+              className="func-coeff"
+              type="text"
+              placeholder="Enter mass in kg"
+              onChange={(e) => setMassText((e.target.value))}
+            />
+          )}
+        </div>
+        <div>
+          {showDecayConst && (
+            <input
+              className="func-coeff"
+              type="text"
+              placeholder="Enter decay constant"
+              onChange={(e) => setDecayConstText((e.target.value))}
+            />
+          )}
         </div>
         <div>
           <input
@@ -209,13 +241,25 @@ function SimpleHarmonicMotion() {
             type="text"
             placeholder="Enter start time in sec"
             onChange={(e) => setStartTimeText((e.target.value))}
-          /><br/>
-          <span> to </span><br/>
+          /><br />
+          <span> to </span><br />
           <input
             className="func-coeff"
             type="text"
             placeholder="Enter end time in sec"
             onChange={(e) => setEndTimeText((e.target.value))}
+          />
+        </div>
+        <div>
+          <FormControlLabel
+            control={<Checkbox checked={showDecayConst} style={{ color: '#61dafb' }} onChange={handleDCCheckboxChange} />}
+            label="Dampened Oscillations"
+          />
+        </div>
+        <div>
+          <FormControlLabel
+            control={<Checkbox checked={showMass} style={{ color: '#61dafb' }} onChange={handleMassCheckboxChange} />}
+            label="Use Mass"
           />
         </div>
         <button className="calculate-answer-btn" onClick={handleChange}>Update Values</button>
