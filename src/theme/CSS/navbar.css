@@ -1,8 +1,12 @@
 .navbar {
-    background-color: #61dafb12;
+    background-color: #1939439b;
     color: white;
     border-bottom: 2px solid #61dafb;
     padding: 15px 0;
+    margin-bottom: 20px;
+    width: 100%;
+    position: fixed;
+    backdrop-filter: blur(15px);
 }
 
 .navbar-container {
