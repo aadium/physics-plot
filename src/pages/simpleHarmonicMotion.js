@@ -8,10 +8,6 @@ import "../theme/CSS/pages.css";
 
 function SimpleHarmonicMotion() {
   const chartRef = useRef(null);
-  var frequency = 0;
-  var maxDisp = 0;
-  var maxVel = 0;
-  var energy = 0;
 
   const [error, setError] = useState('');
   const [amplitude, setAmplitude] = useState(0);
@@ -78,10 +74,11 @@ function SimpleHarmonicMotion() {
     setShowMass(event.target.checked);
   };
 
-  frequency = 1 / (endTime - startTime);
-  maxDisp = amplitude;
-  maxVel = amplitude * angularFrequency;
-  energy = 0.5 * mass * Math.pow(angularFrequency * amplitude, 2);
+  var frequency = angularFrequency / (2 * Math.PI);
+  var timePeriod = 1 / frequency;
+  var maxDisp = amplitude;
+  var maxVel = amplitude * angularFrequency;
+  var energy = 0.5 * mass * Math.pow(angularFrequency * amplitude, 2);
 
   const timeValues = Array.from({ length: numPoints + 1 }, (_, index) => {
     const time = parseFloat(startTimeText) + (index / numPoints) * (parseFloat(endTimeText) - parseFloat(startTimeText));
@@ -91,7 +88,7 @@ function SimpleHarmonicMotion() {
   const data = {
     datasets: [
       {
-        label: 'Wave',
+        label: 'Particle',
         backgroundColor: colors.graphLineColor1,
         borderColor: colors.graphLineColor1,
         data: timeValues.map((time) => ({
@@ -175,6 +172,11 @@ function SimpleHarmonicMotion() {
           <td>Hz</td>
         </tr>
         <tr>
+          <td align="right">Time Period:</td>
+          <td>{timePeriod.toFixed(3)}</td>
+          <td>s</td>
+        </tr>
+        <tr>
           <td align="right">Maximum displacement:</td>
           <td>{maxDisp.toFixed(3)}</td>
           <td>m</td>
@@ -236,6 +238,8 @@ function SimpleHarmonicMotion() {
           )}
         </div>
         <div>
+          <br/>
+          <span> Time Range: </span><br />
           <input
             className="func-coeff"
             type="text"
