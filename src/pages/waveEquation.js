@@ -59,6 +59,11 @@ function WaveGraph() {
     }
   };
 
+  var frequency = angularFrequency / (2 * Math.PI);
+  var timePeriod = 1 / frequency;
+  var maxDisp = amplitude;
+  var maxVel = amplitude * angularFrequency;
+
   const waveValues = Array.from({ length: numPoints + 1 }, (_, index) => {
     const xValue = startTime + (index / numPoints) * (endTime - startTime);
     const time = xValue;
@@ -143,6 +148,28 @@ function WaveGraph() {
   return (
     <center>
       <Navbar />
+      <table className="stats-pane" cellPadding={10}>
+        <tr>
+          <td align="right">Frequency:</td>
+          <td>{frequency.toFixed(3)}</td>
+          <td>Hz</td>
+        </tr>
+        <tr>
+          <td align="right">Time Period:</td>
+          <td>{timePeriod.toFixed(3)}</td>
+          <td>s</td>
+        </tr>
+        <tr>
+          <td align="right">Maximum displacement:</td>
+          <td>{maxDisp.toFixed(3)}</td>
+          <td>m</td>
+        </tr>
+        <tr>
+          <td align="right">Maximum velocity:</td>
+          <td>{maxVel}</td>
+          <td>m/s</td>
+        </tr>
+      </table>
       <div className="input-pane">
         <div>
           <input
