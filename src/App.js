@@ -4,6 +4,7 @@ import ProjectileMotion from "./pages/projectile";
 import HomePage from "./pages/home";
 import SimpleHarmonicMotion from "./pages/simpleHarmonicMotion";
 import WaveEquation from "./pages/waveEquation";
+import ThermalExpansion from "./pages/thermalExpansion";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/projectilemotion" element={<ProjectileMotion />} />
         <Route path="/simpleharmonicmotion" element={<SimpleHarmonicMotion />} />
         <Route path="/waveequation" element={<WaveEquation />} />
+        <Route path="/thermalexpansion" element={<ThermalExpansion />} />
       </Routes>
     </Router>
   )
