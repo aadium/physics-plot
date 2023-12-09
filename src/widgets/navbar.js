@@ -21,6 +21,7 @@ const Navbar = () => {
             <a href="/projectilemotion">Projectile</a>
             <a href="/simpleharmonicmotion">Simple Harmonic</a>
             <a href="/waveequation">Wave</a>
+            <a href='/thermalexpansion'>Thermal Expansion</a>
           </div>
 
           <div className="navbar-toggle" onClick={toggleMobileMenu}>

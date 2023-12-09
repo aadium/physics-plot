@@ -1,225 +1,107 @@
-import React, { useEffect, useRef, useState } from "react";
-import Chart from "chart.js/auto";
+import React, { useRef, useState } from "react";
 import colors from "../theme/colors";
-import Navbar from "../widgets/navbar";
-import { Typography, Checkbox, FormControlLabel } from '@mui/material';
+import Chart from "chart.js/auto";
+import { Typography } from '@mui/material';
 import "../App.css";
 import "../theme/CSS/pages.css";
+import Navbar from "../widgets/navbar";
 
-function WaveGraph() {
+function ThermalExpansion() {
   const chartRef = useRef(null);
 
   const [error, setError] = useState('');
-  const [amplitude, setAmplitude] = useState(0);
-  const [amplitudeText, setAmplitudeText] = useState('');
-  const [waveNumber, setWaveNumber] = useState(0);
-  const [waveNumberText, setWaveNumberText] = useState('');
-  const [angularFrequency, setAngularFrequency] = useState(0);
-  const [angularFrequencyText, setAngularFrequencyText] = useState('');
-  const [startTime, setStartTime] = useState(0);
-  const [startTimeText, setStartTimeText] = useState('');
-  const [endTime, setEndTime] = useState(1);
-  const [endTimeText, setEndTimeText] = useState('');
-  const [numPoints, setNumPoints] = useState(100);
-  const [phaseConstant, setPhaseConstant] = useState(0);
-  const [phaseConstantText, setPhaseConstantText] = useState('');
+  const [linearExpansionCoefficient, setLinearExpansionCoefficient] = useState(0);
+  const [initialLength, setInitialLength] = useState(0);
+  const [finalLength, setFinalLength] = useState(0);
+  const [changeInTemperature, setChangeInTemperature] = useState(0);
+  const [linearExpansionCoefficientText, setLinearExpansionCoefficientText] = useState('');
+  const [initialLengthText, setInitialLengthText] = useState('');
+  const [changeInTemperatureText, setChangeInTemperatureText] = useState('');
 
   const handleChange = () => {
-    const newAmp = parseFloat(amplitudeText);
-    const newWaveNumber = parseFloat(waveNumberText);
-    const newAngV = parseFloat(angularFrequencyText);
-    const newStartTime = parseFloat(startTimeText);
-    const newEndTime = parseFloat(endTimeText);
-    const newPhaseConst = parseFloat(phaseConstantText);
+    const newLinearExpansionCoefficient = parseFloat(linearExpansionCoefficientText);
+    const newInitialLength = parseFloat(initialLengthText);
+    const newChangeInTemperature = parseFloat(changeInTemperatureText);
 
     if (
-      !isNaN(newAmp) &&
-      !isNaN(newWaveNumber) &&
-      !isNaN(newAngV) &&
-      !isNaN(newStartTime) &&
-      !isNaN(newEndTime)
+      !isNaN(newLinearExpansionCoefficient) &&
+      !isNaN(newInitialLength) &&
+      !isNaN(newChangeInTemperature)
     ) {
-      if (newEndTime <= newStartTime) {
-        setError('End time must be greater than start time');
-        return;
-      }
+      setChangeInTemperature(newChangeInTemperature);
+      setInitialLength(newInitialLength);
+      setLinearExpansionCoefficient(newLinearExpansionCoefficient);
 
-      const timePeriod = newEndTime - newStartTime;
-      setNumPoints(Math.ceil(timePeriod / 0.01));
+      const finalLength = newInitialLength * (1 + newLinearExpansionCoefficient * newChangeInTemperature);
 
-      setAmplitude(newAmp);
-      setWaveNumber(newWaveNumber);
-      setPhaseConstant(newPhaseConst);
-      setAngularFrequency(newAngV);
-      setStartTime(newStartTime);
-      setEndTime(newEndTime);
+      setFinalLength(finalLength);
+
+      updateChart(newInitialLength, finalLength);
+
       setError('');
     } else {
       setError('Please enter valid numerical values');
     }
   };
 
-  var frequency = angularFrequency / (2 * Math.PI);
-  var timePeriod = 1 / frequency;
-  var maxDisp = amplitude;
-  var maxVel = amplitude * angularFrequency;
-
-  const waveValues = Array.from({ length: numPoints + 1 }, (_, index) => {
-    const xValue = startTime + (index / numPoints) * (endTime - startTime);
-    const time = xValue;
-    const yValue = amplitude * Math.sin(waveNumber * xValue + angularFrequency * time + phaseConstant);
-    return { x: xValue, y: yValue };
-  });
-
-  const data = {
-    datasets: [
-      {
-        label: 'Wave',
-        backgroundColor: colors.graphLineColor1,
-        borderColor: colors.graphLineColor1,
-        data: waveValues,
-        pointRadius: 0,
-        showLine: true,
-      },
-    ],
-  };
-
-  useEffect(() => {
+  const updateChart = () => {
     const canvas = chartRef.current;
     if (canvas.chart) {
       canvas.chart.destroy();
     }
     const ctx = canvas.getContext("2d");
     canvas.chart = new Chart(ctx, {
-      type: 'line',
-      data: data,
+      type: 'bar',
+      data: {
+        labels: ['Initial Length', 'Final Length'],
+        datasets: [{
+          label: 'Length',
+          backgroundColor: [colors.graphLineColor1, colors.graphLineColor3],
+          data: [initialLength, finalLength],
+        }],
+      },
       options: {
         scales: {
-          x: {
-            title: {
-              display: true,
-              text: 'Time (s)'
-            },
-            type: 'linear',
-            position: 'bottom',
-            gridLines: {
-              display: true,
-            },
-            grid: {
-              color: function (context) {
-                if (context.tick.value === startTime || context.tick.value === endTime) {
-                  return colors.axisColor;
-                } else {
-                  return colors.gridlineColor;
-                }
-              },
-            },
-          },
           y: {
+            beginAtZero: true,
             title: {
               display: true,
-              text: 'Amplitude (m)'
-            },
-            type: 'linear',
-            position: 'left',
-            gridLines: {
-              display: true,
-            },
-            grid: {
-              color: function (context) {
-                if (context.tick.value === 0) {
-                  return colors.axisColor;
-                } else {
-                  return colors.gridlineColor;
-                }
-              },
+              text: 'Length (m)'
             },
           },
         },
       },
     });
-    return () => {
-      if (canvas.chart) {
-        canvas.chart.destroy();
-      }
-    };
-  }, [amplitude, waveNumber, angularFrequency, startTime, endTime, numPoints]);
+  };
 
   return (
     <center>
-      <Navbar />
-      <table className="stats-pane" cellPadding={10}>
-        <tr>
-          <td align="right">Frequency:</td>
-          <td>{frequency.toFixed(3)}</td>
-          <td>Hz</td>
-        </tr>
-        <tr>
-          <td align="right">Time Period:</td>
-          <td>{timePeriod.toFixed(3)}</td>
-          <td>s</td>
-        </tr>
-        <tr>
-          <td align="right">Maximum displacement:</td>
-          <td>{maxDisp.toFixed(3)}</td>
-          <td>m</td>
-        </tr>
-        <tr>
-          <td align="right">Maximum velocity:</td>
-          <td>{maxVel}</td>
-          <td>m/s</td>
-        </tr>
-      </table>
+      <Navbar/>
       <div className="input-pane">
         <div>
           <input
             className="func-coeff"
             type="text"
-            placeholder="Enter amplitude"
-            onChange={(e) => setAmplitudeText(e.target.value)}
+            placeholder="Enter linear expansion coefficient"
+            onChange={(e) => setLinearExpansionCoefficientText(e.target.value)}
           />
         </div>
         <div>
           <input
             className="func-coeff"
             type="text"
-            placeholder="Enter wave number"
-            onChange={(e) => setWaveNumberText(e.target.value)}
+            placeholder="Enter initial length"
+            onChange={(e) => setInitialLengthText(e.target.value)}
           />
         </div>
         <div>
           <input
             className="func-coeff"
             type="text"
-            placeholder="Enter angular frequency"
-            onChange={(e) => setAngularFrequencyText(e.target.value)}
+            placeholder="Enter change in temperature"
+            onChange={(e) => setChangeInTemperatureText(e.target.value)}
           />
         </div>
-        <div>
-          <input
-            className="func-coeff"
-            type="text"
-            placeholder="Enter phase constant"
-            onChange={(e) => setPhaseConstantText((e.target.value))}
-          />
-        </div>
-        <div>
-          <br/>
-          <span> Time Range: </span><br />
-            <input
-              className="func-coeff"
-              type="text"
-              placeholder="Enter start time in sec"
-              onChange={(e) => setStartTimeText((e.target.value))}
-            /><br />
-            <span> to </span><br />
-            <input
-              className="func-coeff"
-              type="text"
-              placeholder="Enter end time in sec"
-              onChange={(e) => setEndTimeText((e.target.value))}
-            />
-          </div>
         <button className="calculate-answer-btn" onClick={handleChange}>
           Update Values
         </button>
@@ -232,4 +114,4 @@ function WaveGraph() {
   );
 }
 
-export default WaveGraph;
+export default ThermalExpansion;
