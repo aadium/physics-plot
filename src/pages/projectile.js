@@ -3,8 +3,11 @@ import Chart from "chart.js/auto";
 import colors from "../theme/colors";
 import Navbar from "../widgets/navbar";
 import { Typography } from '@mui/material';
+import constants from "../constants/constants"
 import "../App.css";
 import "../theme/CSS/pages.css";
+
+const g = constants.g;
 
 function ProjectileMotion() {
   const chartRef = useRef(null);

@@ -5,91 +5,65 @@ import Navbar from "../widgets/navbar";
 import { Typography, Checkbox, FormControlLabel } from '@mui/material';
 import "../App.css";
 import "../theme/CSS/pages.css";
+import constants from "../constants/constants";
 
-function SimpleHarmonicMotion() {
+const g = constants.g;
+
+function FreeFall() {
   const chartRef = useRef(null);
 
   const [error, setError] = useState('');
   const [height, setHeight] = useState(0);
   const [heightText, setHeightText] = useState('');
   const [isAirDrag, setIsAirDrag] = useState(false);
-  const [airDrag, setAirDrag] = useState(0);
-  const [airDragText, setAirDragText] = useState('');
 
   const handleChange = () => {
     const newHeight = parseFloat(heightText);
-    const newMass = (massText !== '') ? parseFloat(massText) : 0;
 
-    if (
-      !isNaN(newAmp) &&
-      !isNaN(newAngV) &&
-      !isNaN(newPhaseConst) &&
-      !isNaN(newMass) &&
-      !isNaN(newStartTime) &&
-      !isNaN(newEndTime)
-    ) {
-      if (newEndTime <= newStartTime) {
-        setError('End time must be greater than start time');
-        return;
-      }
-
-      const timePeriod = newEndTime - newStartTime;
-      setNumPoints(Math.ceil(timePeriod / 0.01));
-
-      setAmplitude(newAmp);
-      setAngularFrequency(newAngV);
-      setPhaseConstant(newPhaseConst);
-      setMass(newMass);
-      setStartTime(newStartTime);
-      setEndTime(newEndTime);
-      setDecayConst(newDecayConst);
-      setError('');
+    if (!isNaN(newHeight)) {
+      setHeight(newHeight);
     } else {
       setError('Please enter valid numerical values');
     }
   };
 
-  const handleDCCheckboxChange = (event) => {
-    setShowDecayConst(event.target.checked);
-  };
-  
-  const handleMassCheckboxChange = (event) => {
-    setShowMass(event.target.checked);
-  };
-
-  var frequency = angularFrequency / (2 * Math.PI);
-  var timePeriod = 1 / frequency;
-  var maxDisp = amplitude;
-  var maxVel = amplitude * angularFrequency;
-  var energy = 0.5 * mass * Math.pow(angularFrequency * amplitude, 2);
-
-  const timeValues = Array.from({ length: numPoints + 1 }, (_, index) => {
-    const time = parseFloat(startTimeText) + (index / numPoints) * (parseFloat(endTimeText) - parseFloat(startTimeText));
-    return time;
-  });
-
-  const data = {
-    datasets: [
-      {
-        label: 'Particle',
-        backgroundColor: colors.graphLineColor1,
-        borderColor: colors.graphLineColor1,
-        data: timeValues.map((time) => ({
-          x: time,
-          y: amplitude * Math.exp(-1 * decayConst * time) * Math.sin(angularFrequency * time + phaseConstant),
-        })),
-        pointRadius: 0,
-        showLine: true,
-      },
-    ],
+  const handleAirDragCheckboxChange = (event) => {
+    setIsAirDrag(event.target.checked);
   };
 
   useEffect(() => {
+    const calculateSpeed = (time) => {
+      const speed = isAirDrag
+        ? Math.sqrt(2 * g * height) * Math.tanh(Math.sqrt(g / height) * time)
+        : Math.sqrt(2 * g * height) * Math.sinh(Math.sqrt(g / height) * time);
+      
+      return speed;
+    };
+
     const canvas = chartRef.current;
     if (canvas.chart) {
       canvas.chart.destroy();
     }
     const ctx = canvas.getContext("2d");
+
+    const timeValues = Array.from({ length: 100 }, (_, index) => index / 1000);
+
+    const data = {
+      datasets: [
+        {
+          label: 'Particle',
+          backgroundColor: colors.graphLineColor1,
+          borderColor: colors.graphLineColor1,
+          data: timeValues.map((time) => ({
+            x: time,
+            y: calculateSpeed(time),
+          })),
+          pointRadius: 0,
+          showLine: true,
+        },
+      ],
+    };
+
     canvas.chart = new Chart(ctx, {
       type: 'line',
       data: data,
@@ -118,7 +92,7 @@ function SimpleHarmonicMotion() {
           y: {
             title: {
               display: true,
-              text: 'Amplitude (m)'
+              text: 'Speed (m/s)'
             },
             type: 'linear',
             position: 'left',
@@ -138,115 +112,30 @@ function SimpleHarmonicMotion() {
         },
       },
     });
+
     return () => {
       if (canvas.chart) {
         canvas.chart.destroy();
       }
     };
-  }, [amplitude, angularFrequency, numPoints, phaseConstant]);
+  }, [height, isAirDrag]);
 
   return (
     <center>
       <Navbar />
-      <table className="stats-pane" cellPadding={10}>
-        <tr>
-          <td align="right">Frequency:</td>
-          <td>{frequency.toFixed(3)}</td>
-          <td>Hz</td>
-        </tr>
-        <tr>
-          <td align="right">Time Period:</td>
-          <td>{timePeriod.toFixed(3)}</td>
-          <td>s</td>
-        </tr>
-        <tr>
-          <td align="right">Maximum displacement:</td>
-          <td>{maxDisp.toFixed(3)}</td>
-          <td>m</td>
-        </tr>
-        <tr>
-          <td align="right">Maximum velocity:</td>
-          <td>{maxVel}</td>
-          <td>m/s</td>
-        </tr>
-        <tr>
-          <td align="right">Energy:</td>
-          <td>{energy.toFixed(3)}</td>
-          <td>J</td>
-        </tr>
-      </table>
       <div className="input-pane">
         <div>
           <input
             className="func-coeff"
             type="text"
-            placeholder="Enter amplitude in metres"
-            onChange={(e) => setAmplitudeText((e.target.value))}
-          />
-        </div>
-        <div>
-          <input
-            className="func-coeff"
-            type="text"
-            placeholder="Enter angular frequency in rad/s"
-            onChange={(e) => setAngularFrequencyText((e.target.value))}
-          />
-        </div>
-        <div>
-          <input
-            className="func-coeff"
-            type="text"
-            placeholder="Enter phase constant"
-            onChange={(e) => setPhaseConstantText((e.target.value))}
-          />
-        </div>
-        <div>
-          {showMass && (
-            <input
-              className="func-coeff"
-              type="text"
-              placeholder="Enter mass in kg"
-              onChange={(e) => setMassText((e.target.value))}
-            />
-          )}
-        </div>
-        <div>
-          {showDecayConst && (
-            <input
-              className="func-coeff"
-              type="text"
-              placeholder="Enter decay constant"
-              onChange={(e) => setDecayConstText((e.target.value))}
-            />
-          )}
-        </div>
-        <div>
-          <br/>
-          <span> Time Range: </span><br />
-          <input
-            className="func-coeff"
-            type="text"
-            placeholder="Enter start time in sec"
-            onChange={(e) => setStartTimeText((e.target.value))}
-          /><br />
-          <span> to </span><br />
-          <input
-            className="func-coeff"
-            type="text"
-            placeholder="Enter end time in sec"
-            onChange={(e) => setEndTimeText((e.target.value))}
+            placeholder="Enter height in metres"
+            onChange={(e) => setHeightText(e.target.value)}
           />
         </div>
         <div>
           <FormControlLabel
-            control={<Checkbox checked={showDecayConst} style={{ color: '#61dafb' }} onChange={handleDCCheckboxChange} />}
-            label="Dampened Oscillations"
-          />
-        </div>
-        <div>
-          <FormControlLabel
-            control={<Checkbox checked={showMass} style={{ color: '#61dafb' }} onChange={handleMassCheckboxChange} />}
-            label="Use Mass"
+            control={<Checkbox checked={isAirDrag} style={{ color: '#61dafb' }} onChange={handleAirDragCheckboxChange} />}
+            label="Air Drag"
           />
         </div>
         <button className="calculate-answer-btn" onClick={handleChange}>Update Values</button>
@@ -259,4 +148,4 @@ function SimpleHarmonicMotion() {
   );
 }
 
-export default SimpleHarmonicMotion;
+export default FreeFall;
