@@ -6,8 +6,6 @@ import { Typography } from '@mui/material';
 import "../App.css";
 import "../theme/CSS/pages.css";
 
-const g = 9.81;
-
 function ProjectileMotion() {
   const chartRef = useRef(null);
   var tOfFlight = 0;
