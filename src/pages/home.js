@@ -58,6 +58,11 @@ function HomePage() {
               Thermal Expansion
             </Link>
           </ListItem>
+          <ListItem>
+            <Link to="/freeFall" className="app-link">
+              Free Fall
+            </Link>
+          </ListItem>
         </List>
       </Container>
     </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import colors from "../theme/colors";
 import Navbar from "../widgets/navbar";
-import { Typography, Checkbox, FormControlLabel } from '@mui/material';
+import { Typography } from '@mui/material';
 import "../App.css";
 import "../theme/CSS/pages.css";
 import constants from "../constants/constants";
@@ -15,7 +15,6 @@ function FreeFall() {
   const [error, setError] = useState('');
   const [height, setHeight] = useState(0);
   const [heightText, setHeightText] = useState('');
-  const [isAirDrag, setIsAirDrag] = useState(false);
 
   const handleChange = () => {
     const newHeight = parseFloat(heightText);
@@ -27,18 +26,7 @@ function FreeFall() {
     }
   };
 
-  const handleAirDragCheckboxChange = (event) => {
-    setIsAirDrag(event.target.checked);
-  };
-
   useEffect(() => {
-    const calculateSpeed = (time) => {
-      const speed = isAirDrag
-        ? Math.sqrt(2 * g * height) * Math.tanh(Math.sqrt(g / height) * time)
-        : Math.sqrt(2 * g * height) * Math.sinh(Math.sqrt(g / height) * time);
-      
-      return speed;
-    };
 
     const canvas = chartRef.current;
     if (canvas.chart) {
@@ -46,7 +34,15 @@ function FreeFall() {
     }
     const ctx = canvas.getContext("2d");
 
-    const timeValues = Array.from({ length: 100 }, (_, index) => index / 1000);
+    const calculateTime = (height) => {
+      return Math.sqrt((2 * height) / g);
+    };
+
+    const calculatePosition = (time) => {
+      return height - 0.5 * g * time ** 2;
+    };
+
+    const timeValues = Array.from({ length: 1000 }, (_, index) => index * calculateTime(height) / 1000);
 
     const data = {
       datasets: [
@@ -56,7 +52,7 @@ function FreeFall() {
           borderColor: colors.graphLineColor1,
           data: timeValues.map((time) => ({
             x: time,
-            y: calculateSpeed(time),
+            y: calculatePosition(time),
           })),
           pointRadius: 0,
           showLine: true,
@@ -92,7 +88,7 @@ function FreeFall() {
           y: {
             title: {
               display: true,
-              text: 'Speed (m/s)'
+              text: 'Height (m)'
             },
             type: 'linear',
             position: 'left',
@@ -118,7 +114,7 @@ function FreeFall() {
         canvas.chart.destroy();
       }
     };
-  }, [height, isAirDrag]);
+  }, [height]);
 
   return (
     <center>
@@ -130,12 +126,6 @@ function FreeFall() {
             type="text"
             placeholder="Enter height in metres"
             onChange={(e) => setHeightText(e.target.value)}
-          />
-        </div>
-        <div>
-          <FormControlLabel
-            control={<Checkbox checked={isAirDrag} style={{ color: '#61dafb' }} onChange={handleAirDragCheckboxChange} />}
-            label="Air Drag"
           />
         </div>
         <button className="calculate-answer-btn" onClick={handleChange}>Update Values</button>
