@@ -14,7 +14,7 @@ const Navbar = () => {
       <nav className="navbar">
         <div className="navbar-container">
           <div className="navbar-logo">
-            <a href="/"><img src={navBarIcon} height={45}/></a>
+            <a href="/"><img src={navBarIcon} alt='Physics Plot' height={45}/></a>
           </div>
 
           <div className={`navbar-links ${isMobileMenuOpen ? 'open' : ''}`}>

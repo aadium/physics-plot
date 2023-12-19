@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import colors from "../theme/colors";
 import Navbar from "../widgets/navbar";
-import { Typography, Checkbox, FormControlLabel } from '@mui/material';
+import { Typography } from '@mui/material';
 import "../App.css";
 import "../theme/CSS/pages.css";
 
@@ -143,7 +143,7 @@ function WaveGraph() {
         canvas.chart.destroy();
       }
     };
-  }, [amplitude, waveNumber, angularFrequency, startTime, endTime, numPoints]);
+  }, [amplitude, waveNumber, angularFrequency, startTime, endTime, numPoints, data]);
 
   return (
     <center>

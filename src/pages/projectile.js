@@ -148,7 +148,7 @@ function ProjectileMotion() {
         canvas.chart.destroy();
       }
     };
-  }, [angle, velocity]);
+  }, [angle, velocity, data]);
 
   return (
     <center>
