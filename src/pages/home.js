@@ -53,6 +53,16 @@ function HomePage() {
               Wave Equation
             </Link>
           </ListItem>
+          <ListItem>
+            <Link to="/thermalexpansion" className="app-link">
+              Thermal Expansion
+            </Link>
+          </ListItem>
+          <ListItem>
+            <Link to="/freeFall" className="app-link">
+              Free Fall
+            </Link>
+          </ListItem>
         </List>
       </Container>
     </div>

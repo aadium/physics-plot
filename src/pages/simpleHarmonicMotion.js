@@ -81,7 +81,7 @@ function SimpleHarmonicMotion() {
   var energy = 0.5 * mass * Math.pow(angularFrequency * amplitude, 2);
 
   const timeValues = Array.from({ length: numPoints + 1 }, (_, index) => {
-    const time = parseFloat(startTimeText) + (index / numPoints) * (parseFloat(endTimeText) - parseFloat(startTimeText));
+    const time = startTime + (index / numPoints) * (endTime - startTime);
     return time;
   });
 
@@ -160,7 +160,7 @@ function SimpleHarmonicMotion() {
         canvas.chart.destroy();
       }
     };
-  }, [amplitude, angularFrequency, numPoints, phaseConstant]);
+  }, [amplitude, angularFrequency, numPoints, phaseConstant, data]);
 
   return (
     <center>

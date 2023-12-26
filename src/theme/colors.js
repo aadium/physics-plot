@@ -4,7 +4,7 @@ const colors = {
     graphLineColor1 : '#2ecc71',
     graphLineColor2 : '#f39c12',
     gridlineColor: '#ffffff10',
-    axisColor : '#FFFFFF'
+    axisColor : '#ffffff'
 }
 
 module.exports = colors

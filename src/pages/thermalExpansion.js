@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import colors from "../theme/colors";
 import Chart from "chart.js/auto";
-import { Typography } from '@mui/material';
+import { Typography } from "@mui/material";
 import "../App.css";
 import "../theme/CSS/pages.css";
 import Navbar from "../widgets/navbar";
@@ -29,20 +29,20 @@ function ThermalExpansion() {
 
       updateChart(newInitialLength, finalLength);
 
-      setError('');
+      setError("");
     } else {
-      setError('Please enter valid numerical values');
+      setError("Please enter valid numerical values");
     }
   };
 
-  const updateChart = () => {
+  const updateChart = (initialLength, finalLength) => {
     const canvas = chartRef.current;
     if (canvas.chart) {
       canvas.chart.destroy();
     }
     const ctx = canvas.getContext("2d");
     canvas.chart = new Chart(ctx, {
-      type: 'bar',
+      type: "bar",
       data: {
         labels: ['Initial Length', 'Final Length'],
         datasets: [{
@@ -57,7 +57,19 @@ function ThermalExpansion() {
             beginAtZero: true,
             title: {
               display: true,
-              text: 'Length (m)'
+              text: "Length (m)",
+            },
+            gridLines: {
+              display: true,
+            },
+            grid: {
+              color: function (context) {
+                if (context.tick.value === 0) {
+                  return colors.axisColor;
+                } else {
+                  return colors.gridlineColor;
+                }
+              },
             },
           },
         },
@@ -88,7 +100,7 @@ function ThermalExpansion() {
           <input
             className="func-coeff"
             type="text"
-            placeholder="Enter initial length"
+            placeholder="Enter initial length in meters"
             onChange={(e) => setInitialLengthText(e.target.value)}
           />
         </div>
@@ -105,8 +117,8 @@ function ThermalExpansion() {
         </button>
         {error && <Typography color="error">{error}</Typography>}
       </div>
-      <div style={{ maxWidth: '650px', maxHeight: '750px' }}>
-        <canvas ref={chartRef} style={{ width: '100%', height: '100%' }} />
+      <div style={{ maxWidth: '625px', maxHeight: '725px' }}>
+        <canvas ref={chartRef} style={{ width: "100%", height: "100%" }} />
       </div>
     </center>
   );
