@@ -13,6 +13,7 @@ function ThermalExpansion() {
   const [linearExpansionCoefficientText, setLinearExpansionCoefficientText] = useState("");
   const [initialLengthText, setInitialLengthText] = useState("");
   const [changeInTemperatureText, setChangeInTemperatureText] = useState("");
+  const [finalLength, setFinalLength] = useState(0);
 
   const handleChange = () => {
     const newLinearExpansionCoefficient = parseFloat(linearExpansionCoefficientText);
@@ -24,7 +25,7 @@ function ThermalExpansion() {
       !isNaN(newInitialLength) &&
       !isNaN(newChangeInTemperature)
     ) {
-      const finalLength = newInitialLength * (1 + newLinearExpansionCoefficient * newChangeInTemperature);
+      setFinalLength(newInitialLength * (1 + newLinearExpansionCoefficient * newChangeInTemperature));
 
       updateChart(newInitialLength, finalLength);
 
@@ -43,19 +44,12 @@ function ThermalExpansion() {
     canvas.chart = new Chart(ctx, {
       type: "bar",
       data: {
-        labels: [''],
-        datasets: [
-          {
-            label: "Initial Length",
-            backgroundColor: [colors.graphLineColor1],
-            data: [initialLength],
-          },
-          {
-            label: "Final Length",
-            backgroundColor: [colors.graphLineColor2],
-            data: [finalLength],
-          },
-        ],
+        labels: ['Initial Length', 'Final Length'],
+        datasets: [{
+          label: 'Length',
+          backgroundColor: [colors.graphLineColor1, colors.graphLineColor2],
+          data: [parseFloat(initialLengthText), finalLength],
+        }],
       },
       options: {
         scales: {
@@ -86,6 +80,13 @@ function ThermalExpansion() {
   return (
     <center>
       <Navbar />
+      <table className="stats-pane" cellPadding={10}>
+        <tr>
+          <td align="right">Change in length:</td>
+          <td>{(finalLength - parseFloat(initialLengthText)).toFixed(3)}</td>
+          <td>m</td>
+        </tr>
+      </table>
       <div className="input-pane">
         <div>
           <input
@@ -107,7 +108,7 @@ function ThermalExpansion() {
           <input
             className="func-coeff"
             type="text"
-            placeholder="Enter temperature change in °C"
+            placeholder="Enter temp change in Kelvin"
             onChange={(e) => setChangeInTemperatureText(e.target.value)}
           />
         </div>
