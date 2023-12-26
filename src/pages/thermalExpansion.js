@@ -25,7 +25,9 @@ function ThermalExpansion() {
       !isNaN(newInitialLength) &&
       !isNaN(newChangeInTemperature)
     ) {
-      setFinalLength(newInitialLength * (1 + newLinearExpansionCoefficient * newChangeInTemperature));
+      const newFinalLength = newInitialLength * (1 + newLinearExpansionCoefficient * newChangeInTemperature);
+      setFinalLength(newFinalLength);
+      updateChart(newInitialLength, newFinalLength);
 
       updateChart(newInitialLength, finalLength);
 
