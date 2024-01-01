@@ -1,5 +1,5 @@
 # Physics Plot
-<a href="https://physics-plot.vercel.app/">Visualize and understand physics concepts through interactive graphs of equations.</a>
+<a href="https://physics-plot.vercel.app/" target="_blank">Visualize and understand physics concepts through interactive graphs of equations.</a>
 
 <h3>Available graphs</h3>
 <li>Projectile Motion</li>
