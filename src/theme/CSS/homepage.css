@@ -9,7 +9,6 @@ body {
     text-align: center;
     border-radius: 10px 10px 0px 0px;
     border: 2px solid #61dafb;
-    border-bottom: 0px;
     background-color: #61dafb10;
     color: #61dafb;
 }
@@ -21,14 +20,13 @@ body {
     border-top: 0px;
     border-bottom: 0px;
     padding: 30px;
-    background-color: #ffffff05;
+    background-color: #0f0f0f;
 }
 
 .equations {
     border-radius: 0px 0px 10px 10px;
     border: 2px solid #61dafb;
     color: #61dafb;
-    border-top: 0px;
     padding: 30px;
     background-color: #61dafb10;
 }
