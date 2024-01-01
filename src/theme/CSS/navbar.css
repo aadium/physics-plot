@@ -1,8 +1,13 @@
+@font-face {
+    font-family: "TafelwerkOT";
+    src: url('../../../public/fonts/TafelwerkOT.ttf') format('truetype');
+}
+
 .navbar {
     background-color: #1939439b;
     color: white;
     border-bottom: 2px solid #61dafb;
-    padding: 15px 0;
+    padding: 10px 0;
     margin-bottom: 20px;
     width: 100%;
     position: fixed;
@@ -19,9 +24,11 @@
 }
 
 .navbar-logo a {
-    color: white;
+    font-family: 'TafelwerkOT';
+    color: #61dafb;
     text-decoration: none;
     font-size: 1.5rem;
+    font-weight: bold;
 }
 
 .navbar-links {
