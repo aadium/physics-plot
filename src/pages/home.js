@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "../widgets/navbar";
 import { Container, List, ListItem } from "@mui/material";
 import { Link } from "react-router-dom";
+import { Analytics } from '@vercel/analytics/react';
 import "../theme/CSS/homepage.css";
 
 function HomePage() {
@@ -61,6 +62,7 @@ function HomePage() {
           </ListItem>
         </List>
       </Container>
+      <Analytics />
     </div>
   );
 }
