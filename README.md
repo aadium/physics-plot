@@ -1,5 +1,12 @@
 # Physics Plot
-Visualize and understand physics concepts through interactive graphs of equations.
+<a href="https://physics-plot.vercel.app/">Visualize and understand physics concepts through interactive graphs of equations.</a>
+
+<h3>Available graphs</h3>
+<li>Projectile Motion</li>
+<li>Simple Harmonic Motion</li>
+<li>Waves</li>
+<li>Thermal Expansion</li>
+<li>Free Fall</li>
 
 <h3>How to use</h3>
 <li>Select the physics equation you want to graph.
