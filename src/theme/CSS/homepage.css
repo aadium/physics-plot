@@ -1,16 +1,32 @@
+@font-face {
+    font-family: "TafelwerkOT";
+    src: url('../../../public/fonts/TafelwerkOT.ttf') format('truetype');
+}
+
 body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
+    font-family: sans-serif;
 }
 
 .hero {
-    padding: 50px;
+    padding: 30px;
     text-align: center;
     border-radius: 10px 10px 0px 0px;
     border: 2px solid #61dafb;
     background-color: #61dafb10;
     color: #61dafb;
+    width: 90%;
+}
+
+h1 {
+    font-size: 9rem;
+    font-family: 'TafelwerkOT', sans-serif;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    font-weight: lighter;
+}
+
+h3 {
+    font-size: 2.5rem;
 }
 
 .features,
@@ -21,6 +37,7 @@ body {
     border-bottom: 0px;
     padding: 30px;
     background-color: #0f0f0f;
+    width: 90%;
 }
 
 .equations {
@@ -29,11 +46,12 @@ body {
     color: #61dafb;
     padding: 30px;
     background-color: #61dafb10;
+    width: 90%;
 }
 
 .features li,
 .how-to-use li {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .app-link {
@@ -44,4 +62,9 @@ body {
 
 .app-link:hover {
     text-decoration: underline;
+}
+.subtitle {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0px;
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "../widgets/navbar";
-import { Container, Typography, List, ListItem } from "@mui/material";
+import { Container, List, ListItem } from "@mui/material";
 import { Link } from "react-router-dom";
 import "../theme/CSS/homepage.css";
 
@@ -9,34 +9,30 @@ function HomePage() {
     <div>
       <Navbar />
       <Container className="hero">
-        <Typography variant="h1">Physics Plot</Typography>
-        <Typography variant="body1">
+        <h1>Physics Plot</h1>
+        <p className="subtitle">
           Visualize and understand physics concepts through interactive graphs
           of equations.
-        </Typography>
+        </p>
       </Container>
       <Container className="features">
-        <Typography variant="h2">Key Features</Typography>
-        <List>
-          <ListItem>Graphing of various physics equations.</ListItem>
-          <ListItem>Customizable parameters for accurate representations.</ListItem>
-          <ListItem>Real-time visualization of changes in equations.</ListItem>
-        </List>
+        <h3>Key Features</h3>
+        <ul>
+          <li>Graphing of various physics equations.</li>
+          <li>Customizable parameters for accurate representations.</li>
+          <li>Real-time visualization of changes in equations.</li>
+        </ul>
       </Container>
       <Container className="how-to-use">
-        <Typography variant="h2">How to Use</Typography>
-        <Typography variant="body1">
-          Explore the world of physics graphing with our easy-to-use interface.
-          Follow these simple steps:
-        </Typography>
-        <List>
-          <ListItem>Select the physics equation you want to graph.</ListItem>
-          <ListItem>Adjust parameters such as frequency, velocity, mass, etc.</ListItem>
-          <ListItem>Observe the real-time graph visualization.</ListItem>
-        </List>
+        <h3>How to Use</h3>
+        <ul>
+          <li>Select the physics equation you want to graph.</li>
+          <li>Adjust parameters such as frequency, velocity, mass, etc.</li>
+          <li>Observe the real-time graph visualization.</li>
+        </ul>
       </Container>
       <Container className="equations">
-        <Typography variant="h2">Start Plotting</Typography>
+        <h3>Start Plotting</h3>
         <List>
           <ListItem>
             <Link to="/projectilemotion" className="app-link">

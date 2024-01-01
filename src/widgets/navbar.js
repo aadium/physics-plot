@@ -26,9 +26,9 @@ const Navbar = () => {
           </div>
 
           <div className="navbar-toggle" onClick={toggleMobileMenu}>
-            <span>A</span>
-            <span>B</span>
-            <span>C</span>
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
         </div>
       </nav>
