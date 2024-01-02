@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import colors from "../theme/colors";
 import Chart from "chart.js/auto";
 import { Typography } from "@mui/material";
+import { Analytics } from '@vercel/analytics/react';
 import "../App.css";
 import "../theme/CSS/pages.css";
 import Navbar from "../widgets/navbar";
@@ -122,6 +123,7 @@ function ThermalExpansion() {
       <div style={{ maxWidth: '625px', maxHeight: '725px' }}>
         <canvas ref={chartRef} style={{ width: "100%", height: "100%" }} />
       </div>
+      <Analytics />
     </center>
   );
 }

@@ -3,6 +3,7 @@ import Chart from "chart.js/auto";
 import colors from "../theme/colors";
 import Navbar from "../widgets/navbar";
 import { Typography } from '@mui/material';
+import { Analytics } from '@vercel/analytics/react';
 import "../App.css";
 import "../theme/CSS/pages.css";
 import constants from "../constants/constants";
@@ -134,6 +135,7 @@ function FreeFall() {
       <div style={{ maxWidth: '650px', maxHeight: '750px' }}>
         <canvas ref={chartRef} style={{ width: '100%', height: '100%' }} />
       </div>
+      <Analytics />
     </center>
   );
 }
